@@ -1,7 +1,6 @@
 import { async } from 'regenerator-runtime';
-import { API_URL } from './config.js';
+import { API_URL, RES_PER_PAGE } from './config.js';
 import { getJSON } from './helpers.js';
-import { RES_PER_PAGE } from './config.js';
 
 export const state = {
   recipe: {},
@@ -39,7 +38,6 @@ export const loadSearchResults = async function (query) {
     state.search.query = query;
 
     const data = await getJSON(`${API_URL}?search=${query}`);
-    console.log(data);
 
     state.search.results = data.data.recipes.map(rec => {
       return {
@@ -49,7 +47,6 @@ export const loadSearchResults = async function (query) {
         image: rec.image_url,
       };
     });
-    console.log(state.search.results);
   } catch (err) {
     console.error(`☠️☠️☠️ -- ${err} -- ☠️☠️☠️`);
     throw err;
