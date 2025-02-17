@@ -3,19 +3,22 @@ import icons from 'url:../../img/icons.svg'; // Parcel 2
 export default class View {
   _data;
 
-  render(data) {
-    // if (!data || (Array.isArray(data) && data.length === 0))
-    //   return this.renderError();
+  render(data, render = true) {
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.renderError();
 
     this._data = data;
     const markup = this._generateMarkup();
+
+    if (!render) return markup;
+
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
   update(data) {
-    if (!data || (Array.isArray(data) && data.length === 0))
-      return this.renderError();
+    // if (!data || (Array.isArray(data) && data.length === 0))
+    //   return this.renderError();
 
     this._data = data;
     const newMarkup = this._generateMarkup();
@@ -31,9 +34,8 @@ export default class View {
       // Update changed TEXT
       if (
         !newEl.isEqualNode(curEl) &&
-        newEl.firstChild.nodeValue.trim() !== ''
+        newEl.firstChild?.nodeValue.trim() !== ''
       ) {
-        // console.log('🔥', newEl.firstChild.nodeValue.trim());
         curEl.textContent = newEl.textContent;
       }
 
