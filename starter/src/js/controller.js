@@ -9,10 +9,7 @@ import addRecipeview from './views/addRecipeview.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-
-if (module.hot) {
-  module.hot.accept();
-}
+import { async } from 'regenerator-runtime';
 
 const controlRecipes = async function () {
   try {
@@ -23,15 +20,18 @@ const controlRecipes = async function () {
 
     // 0) Update results view to mark selected search result
     resultsView.update(model.getSearchResultsPage());
+
+    // 1) Updating bookmarks view
     bookmarksView.update(model.state.bookmarks);
 
-    // 1) loading recipe
+    // 2) loading recipe
     await model.loadRecipe(id);
 
-    // 2) rending recipe
+    // 3) rending recipe
     recipeView.render(model.state.recipe);
   } catch (err) {
     recipeView.renderError();
+    console.error(err);
   }
 };
 
@@ -96,13 +96,18 @@ const controlAddRecipe = async function (newRecipe) {
 
     // Upload the new recipe data
     await model.uploadRecipe(newRecipe);
-    console.log(model.state.recipe);
 
     // Render recipe
     recipeView.render(model.state.recipe);
 
     // Success message
     addRecipeview.renderMessage();
+
+    // Render the bookmark View
+    bookmarksView.render(model.state.bookmarks);
+
+    // Change ID in URL
+    window.history.pushState(null, '', `#${model.state.recipe.id}`);
 
     // Close form window
     setTimeout(function () {
